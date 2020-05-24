@@ -1,32 +1,31 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
+import React, { Component } from 'react';
 
-import * as STLib  from 'src/styled/index'
+import * as STLib from '@styled/index';
 
 interface IProps {
-  foo ?: boolean;
+  foo?: boolean;
 }
 interface IState {
   value: string;
 }
 
 class Form extends Component<IProps, IState> {
-  constructor(props : IProps) {
+  constructor(props: IProps) {
     super(props);
 
     this.state = {
-      value: ""
+      value: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(event : any) {
+  handleChange(event: any) {
     const { value } = event.target;
 
     this.setState(() => {
       return {
-        value
+        value,
       };
     });
   }
@@ -34,26 +33,15 @@ class Form extends Component<IProps, IState> {
   render() {
     return (
       <div>
-      <form>
-        <input
-          type="text"
-          value={this.state.value}
-          onChange={this.handleChange}
-        />
-        <input
-          type="text"
-          value={this.state.value}
-          onChange={this.handleChange}
-        />
-        <STLib.STButton>go go go duderss</STLib.STButton>
-      </form>
-      <h2>fooooo?</h2>
+        <form>
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <STLib.STButton>go go go duderss</STLib.STButton>
+        </form>
+        <h2>fooooo?</h2>
       </div>
     );
   }
 }
 
-export default Form;
-
-const wrapper = document.getElementById("container");
-wrapper ? ReactDOM.render(<Form />, wrapper) : false;
+export { Form };

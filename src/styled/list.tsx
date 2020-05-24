@@ -1,11 +1,9 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const STMatches = styled.ul`
-  background: red;
-`
+  background: red;ll
+`;
 
-STMatches.displayName = 'STMatches'
+STMatches.displayName = 'STMatches';
 
-export {
-  STMatches
-}
+export { STMatches };
