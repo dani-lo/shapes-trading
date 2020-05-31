@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import * as STLib from '@styled/index';
+import * as STElement from '@styled/index';
 
 interface IProps {
   foo?: boolean;
@@ -11,6 +11,7 @@ interface IState {
 
 class Form extends Component<IProps, IState> {
   constructor(props: IProps) {
+    
     super(props);
 
     this.state = {
@@ -36,9 +37,8 @@ class Form extends Component<IProps, IState> {
         <form>
           <input type="text" value={this.state.value} onChange={this.handleChange} />
           <input type="text" value={this.state.value} onChange={this.handleChange} />
-          <STLib.STButton>go go go duderss</STLib.STButton>
+          <STElement.STButton>go go go duderss</STElement.STButton>
         </form>
-        <h2>fooooo?</h2>
       </div>
     );
   }

@@ -1,28 +1,35 @@
 export const theme = {
   colors: {
-    bgMain: 'rgb(255,225,225)',
-    bgAlt: 'rgb(255,225,225)',
-    txtMain: 'rgb(25,55, 55)',
-    txtAlt: 'rgb(25,55, 55)',
-    btnMain: 'rgb(195,195, 105)',
+    primary: '#607D8B',
+    alt: '#455A64',
+    secondary: '#F48FB1',
+    white: '#fff',
+    txt : {
+      primary: '#263238',
+      alt: '#ECEFF1',
+    },
+    border: {
+      primary: '#CFD8DC',
+      alt: '#E0E0E0',
+    },
     success: '',
     error: '',
     warning: '',
   },
   font: {
-    large: '2rem',
-    medium: '1.5rem',
+    large: '1.75rem',
+    medium: '1.25rem',
     small: '1rem',
     micro: '0.75rem',
   },
   padding: {
-    large: '2rem',
-    medium: '1.5rem',
-    small: '1rem',
+    large: '1.75rem',
+    medium: '1.25rem',
+    small: '0.75rem',
   },
   margin: {
-    large: '2rem',
-    medium: '1.5rem',
-    small: '1rem',
+    large: '1.75rem',
+    medium: '1.25rem',
+    small: '0.75rem',
   },
-};
+}
