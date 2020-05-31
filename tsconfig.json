@@ -2,21 +2,24 @@
   "compilerOptions": {
       "outDir": "./dist/",
       "sourceMap": true,
-      "noImplicitAny": true,
+      "noImplicitAny": false,
       "module": "commonjs",
       "target": "es6",
       "jsx": "react",
       "esModuleInterop": true,
       "baseUrl": ".",
       "paths": {
+        "@api/*" : ["src/data/api/*"],
         "@styled/*" : ["src/styled/*"],
-        "@widget/*" : ["src/components/widget/*"]
+        "@component/*" : ["src/components/*"],
+        "@chart/*"  : ["src/components/chart/*"],
+        "@stlib/*"  : ["src/st-lib/*"],
+        "@store/*"  : ["src/data/store/*"],
+        "@alltypes/*"  : ["src/types/*"],
+        "@settings/*"  : ["src/settings/*"]
       },
-      "types": ["jest"]
+      "types": ["jest", "node"]
   },
-  "include": [
-    "src/*"
-  ],
   "exclude": [
     "node_modules",
     "./node_modules",
