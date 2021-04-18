@@ -8,7 +8,7 @@ interface ICandleChartProps {
 const STCandleChart = styled.div<ICandleChartProps>`
   width: ${ props => props.w }px;
   height: ${ props => props.h }px;
-  background: ${(props) => props.theme.colors.white};
+  background: ${(props) => props.theme.colors.bg.primary};
   border: 1px solid ${(props) => props.theme.colors.border.alt};
 `
 

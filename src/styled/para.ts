@@ -1,7 +1,9 @@
 import styled from 'styled-components'
 
 const STPara = styled.p`
-  font-size: ${ props => props.theme.font.small }
+  color: ${(props) => props.theme.colors.txt.primary};
+  padding: 0;
+  margin: 0;
 `
 
 STPara.displayName = 'STPara'

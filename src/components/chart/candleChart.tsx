@@ -1,5 +1,4 @@
 import React from 'react'
-import * as d3 from 'd3'
 
 import { randId } from '@stlib/util/randId'
 import { CandlestickChart } from '@stlib/chart/candlestick'
@@ -8,41 +7,85 @@ import { ST_SETTINGS } from '@settings/settings'
 
 import * as STElement from '@styled/index'
 
+import { fetchIndicatorsPriceSeries } from '@api/priceSeries'
+import { IMatchSettings } from '@alltypes/types'
 
-import { IPriceData } from '@alltypes/types'
-import { DSVRowArray } from 'd3'
+interface IProps {
+  ticker: string 
+  from: string
+  to: string
+  fpad: number
+  bpad: number
+  autoload: boolean
+  matchOptions: IMatchSettings
+}
 
-export class CandleChart extends React.Component {
+interface IState {
+  plotted: boolean
+}
+
+export class CandleChart extends React.Component<IProps, IState> {
   chartID: string
+  chart: CandlestickChart
+  
+  constructor (props : IProps) {
+    super(props)
+
+    this.chartID = `${randId()}`
+
+    this.state= {
+      plotted: props.autoload
+    }
+  }
 
   componentDidMount(): void {
     const chartID = this.chartID
 
-    d3.csv('/assets/data.csv').then((csvprices : DSVRowArray<string>)  => {
+    const { from, to, autoload } = this.props 
 
-      const prices : IPriceData[] = csvprices.map(p => {
-        return {
-          Open: Number(p.Open),
-          High: Number(p.High),
-          Close: Number(p.Close),
-          Low: Number(p.Low),
-          Date: p.Date
-        }
-      })
+    this.chart = new CandlestickChart(
+      chartID, 
+      { w: ST_SETTINGS.chart.width, h: ST_SETTINGS.chart.height },
+      from,
+      to 
+    )
+    
+    if (autoload) {
+      this.plot()
+    }
+  } 
 
-      const chart = new CandlestickChart(chartID, prices, {w: ST_SETTINGS.chart.width, h: ST_SETTINGS.chart.height})
+  plot () : void {
+    const { matchOptions, fpad, bpad, autoload } = this.props 
 
-      chart.plot()
+    fetchIndicatorsPriceSeries(matchOptions, fpad, bpad).then(prices => {
+      this.chart.setPrices(prices).plot()
+
+      if (!autoload) {
+        this.setState({plotted: true})
+      }
     })
   }
 
   render(): JSX.Element {
-    this.chartID = `${randId()}`
+    const { autoload } = this.props 
 
-    return <STElement.STCandleChart 
-      id={ this.chartID } 
-      h={ ST_SETTINGS.chart.height } 
-      w={ ST_SETTINGS.chart.width } 
-    />
+    return <>
+    {
+      (!autoload) ? 
+      <STElement.STButton
+        onClick={  () => this.plot()}
+        disabled={ this.state.plotted }
+      > 
+        Plot Match Result
+      </STElement.STButton> :
+      null
+    }
+      <STElement.STCandleChart 
+        id={ this.chartID } 
+        h={ ST_SETTINGS.chart.height } 
+        w={ ST_SETTINGS.chart.width } 
+      />
+    </>
   }
 }

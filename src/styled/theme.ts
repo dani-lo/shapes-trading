@@ -1,16 +1,20 @@
 export const theme = {
   colors: {
-    primary: '#607D8B',
-    alt: '#455A64',
-    secondary: '#F48FB1',
+    primary: '#fd4659',
+    alt: '#193948',
+    secondary: '#c7c3c6',
     white: '#fff',
     txt : {
-      primary: '#263238',
+      primary: '#555',
       alt: '#ECEFF1',
     },
     border: {
-      primary: '#CFD8DC',
-      alt: '#E0E0E0',
+      primary: '#ddd',
+      alt: '#f1f1f1',
+      dark: '#c9c9c9'
+    },
+    bg: {
+      primary: '#f2f1f1',
     },
     success: '',
     error: '',

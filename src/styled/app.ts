@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const STApp = styled.div`
-
   ul {
     margin: 0;
     padding: 0;
