@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+      "outDir": "./dist/",
+      "sourceMap": true,
+      "noImplicitAny": false,
+      "module": "commonjs",
+      "target": "es6",
+      "jsx": "react",
+      "esModuleInterop": true,
+      "baseUrl": ".",
+      "paths": {
+        "@api/*" : ["src/data/api/*"],
+        "@styled/*" : ["src/styled/*"],
+        "@component/*" : ["src/components/*"],
+        "@chart/*"  : ["src/components/chart/*"],
+        "@stlib/*"  : ["src/st-lib/*"],
+        "@store/*"  : ["src/data/store/*"],
+        "@alltypes/*"  : ["src/types/*"],
+        "@settings/*"  : ["src/settings/*"]
+      },
+      "types": ["jest", "node"]
+  },
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+  ]
+}
