@@ -7,8 +7,8 @@
   "scripts": {
     "tsc": "tsc",
     "build": "rm -rf ./dist && tsc",
-    "start": "export NODE_ENV=production && node dist/server.js",
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts --watch src",
+    "prod": "export NODE_ENV=production && node dist/server.js",
+    "start": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts --watch src",
     "test": "jest --watch --runInBand --verbose --silent",
     "test:loud": "jest --watch --runInBand --verbose",
     "coverage": "jest --coverage"
