@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { debounce } from 'lodash'
 
 import { useSTContext } from '@component/provider'
@@ -12,6 +13,13 @@ import { formatDate } from '@stlib/util/formatDate'
 import * as STElement from '@styled/index'
 
 import { ESettingType, IInputValue, IMatch, ITicker } from '@alltypes/types';
+
+const StyledMatchForm = styled(STElement.STBox)`
+  position: absolute;
+  left: 64px;
+  height: 100%;
+  width: 540px;
+`
 
 export const MatchForm = (): JSX.Element => {
 
@@ -56,7 +64,7 @@ export const MatchForm = (): JSX.Element => {
       
     })
   }, [])
-  const tickerOptions = tickersData .map(t => ({label: t.name, value: t.value }))
+  const tickerOptions = tickersData.map(t => ({label: t.name, value: t.value }))
 
   const getMatch = () => {
     setLoading(true)
@@ -85,9 +93,9 @@ export const MatchForm = (): JSX.Element => {
 
   const [compindexes, setCompindexes] = useState([0, tickersData.length])
 
-  return <STElement.STBox bg={ true } border={'0 0 1px 0'}>
+  return <StyledMatchForm bg={ true } border={'0 1px 0 0'} className="padding-helf-left">
     <STElement.STFlexBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Main Ticker"
           type={ ESettingType.options }
@@ -98,49 +106,22 @@ export const MatchForm = (): JSX.Element => {
             })} 
         />
       </STElement.STBox>
+      <STElement.STBox className="padding-half padding-left">
+        <WidgetMatchSetting
+          label="Channel target"
+          type={ ESettingType.options }
+          values={ [ {label: matchOptions.donchian_channel_target, value: matchOptions.donchian_channel_target } ]}
+          options={ [{label: 'high', value: 'high'}, {label: 'low', value: 'low'}] }
+          onOptionChange={ (opt) => setMatchOptions({
+            donchian_channel_target: opt[0].value 
+          })} 
+        />
+      </STElement.STBox>
+    </STElement.STFlexBox>
 
-        <STElement.STBox className="padding">
-          <WidgetMatchSetting
-              label="vs (index from)"
-              type={ ESettingType.text }
-              val={ String(compindexes[0]) }
-              onTxtChange={(e : IInputValue) => {
 
-                const idx = e.target.value
-
-                setCompindexes([Number(idx), compindexes[1]])
-
-                debounce(() => {  
-                  setMatchOptions({
-                    to_ticker: tickersData.slice(Number(idx), Number(compindexes[1])).map(t => t.name)
-                  })
-                }, 400)()
-                
-              }} 
-          />
-        </STElement.STBox>
-        <STElement.STBox className="padding">
-          <WidgetMatchSetting
-              label="vs (index to)"
-              type={ ESettingType.text }
-              val={ String(compindexes[1]) }
-              onTxtChange={(e : IInputValue) => {
-                
-                const idx = e.target.value
-                setCompindexes([compindexes[0], Number(e.target.value)])
-
-                debounce(() => {
-                  setMatchOptions({
-                    to_ticker:tickersData.slice(Number(compindexes[0]), Number(idx)).map(t => t.name)
-                  })
-                }, 400)()
-              }} 
-          />
-        </STElement.STBox>
-      </STElement.STFlexBox>
-   
-    <STElement.STFlexBox valign="bottom">
-      <STElement.STBox className="padding">
+    {/* <STElement.STFlexBox>
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Range Target From"
           type={ ESettingType.date }
@@ -153,7 +134,7 @@ export const MatchForm = (): JSX.Element => {
           }}
         />
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Range Target To"
           type={ ESettingType.date }
@@ -166,7 +147,50 @@ export const MatchForm = (): JSX.Element => {
           }}
         />
       </STElement.STBox>
-      <STElement.STBox className="padding">
+    </STElement.STFlexBox> */}
+
+   
+    <STElement.STFlexBox valign="bottom">
+      <STElement.STBox className="padding-half padding-left">
+        <WidgetMatchSetting
+            label="vs (index from)"
+            type={ ESettingType.text }
+            val={ String(compindexes[0]) }
+            onTxtChange={(e : IInputValue) => {
+
+              const idx = e.target.value
+
+              setCompindexes([Number(idx), compindexes[1]])
+
+              debounce(() => {  
+                setMatchOptions({
+                  to_ticker: tickersData.slice(Number(idx), Number(compindexes[1])).map(t => t.name)
+                })
+              }, 400)()
+              
+            }} 
+        />
+      </STElement.STBox>
+      <STElement.STBox className="padding-half padding-left">
+        <WidgetMatchSetting
+            label="vs (index to)"
+            type={ ESettingType.text }
+            val={ String(compindexes[1]) }
+            onTxtChange={(e : IInputValue) => {
+              
+              const idx = e.target.value
+              setCompindexes([compindexes[0], Number(e.target.value)])
+
+              debounce(() => {
+                setMatchOptions({
+                  to_ticker:tickersData.slice(Number(compindexes[0]), Number(idx)).map(t => t.name)
+                })
+              }, 400)()
+            }} 
+        />
+      </STElement.STBox>
+      
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Donchian Period"
           type={ ESettingType.text }
@@ -177,8 +201,10 @@ export const MatchForm = (): JSX.Element => {
         />
       </STElement.STBox>
       </STElement.STFlexBox>
+
+
       <STElement.STFlexBox valign="bottom">
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="MA Lookback"
           type={ ESettingType.text }
@@ -189,7 +215,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="First close tolerance"
           type={ ESettingType.text }
@@ -200,7 +226,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Last close tolerance"
           type={ ESettingType.text }
@@ -214,18 +240,8 @@ export const MatchForm = (): JSX.Element => {
       
     </STElement.STFlexBox>
     <STElement.STFlexBox>
-      <STElement.STBox className="padding">
-        <WidgetMatchSetting
-          label="Channel target"
-          type={ ESettingType.options }
-          values={ [ {label: matchOptions.donchian_channel_target, value: matchOptions.donchian_channel_target } ]}
-          options={ [{label: 'high', value: 'high'}, {label: 'low', value: 'low'}] }
-          onOptionChange={ (opt) => setMatchOptions({
-            donchian_channel_target: opt[0].value 
-          })} 
-        />
-      </STElement.STBox>
-      <STElement.STBox className="padding">
+
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Steep tolerance"
           type={ ESettingType.text }
@@ -236,7 +252,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Width tolerance"
           type={ ESettingType.text }
@@ -247,12 +263,9 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-    </STElement.STFlexBox>
-
-    <STElement.STFlexBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
       <WidgetMatchSetting
-          label="Segments Chain Length"
+          label="Chain Length"
           type={ ESettingType.text }
           val={ String(matchOptions.anal_segments_len) }
           onTxtChange={ (opt) => {
@@ -261,7 +274,11 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+    </STElement.STFlexBox>
+
+    <STElement.STFlexBox>
+      
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="MA Period"
           type={ ESettingType.text }
@@ -272,7 +289,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Channel Lookback"
           type={ ESettingType.text }
@@ -283,9 +300,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-    </STElement.STFlexBox>
-    <STElement.STFlexBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Fprward Pad From"
           type={ ESettingType.text }
@@ -296,7 +311,11 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+    </STElement.STFlexBox>
+
+
+    <STElement.STFlexBox>
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Backward Pad From"
           type={ ESettingType.text }
@@ -307,9 +326,7 @@ export const MatchForm = (): JSX.Element => {
             })
           }}/>
       </STElement.STBox>
-      </STElement.STFlexBox>
-      <STElement.STFlexBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Fprward Pad To"
           type={ ESettingType.text }
@@ -320,7 +337,7 @@ export const MatchForm = (): JSX.Element => {
             })
         }}/>
       </STElement.STBox>
-      <STElement.STBox className="padding">
+      <STElement.STBox className="padding-half padding-left">
         <WidgetMatchSetting
           label="Backward Pad To"
           type={ ESettingType.text }
@@ -331,8 +348,9 @@ export const MatchForm = (): JSX.Element => {
             })
           }}/>
       </STElement.STBox>
-    </STElement.STFlexBox>
-    <STElement.STBox className="padding">
+      </STElement.STFlexBox>
+
+    <STElement.STBox className="padding-half padding-left">
       <STElement.STButton
         disabled={!matchOptions.from_ticker || !matchOptions.to_ticker} 
         onClick={ () => getMatch()}>
@@ -353,5 +371,5 @@ export const MatchForm = (): JSX.Element => {
         <i className="fa fa-floppy-o" aria-hidden="true"></i>
       </STElement.STButton>
     </STElement.STBox>
-  </STElement.STBox>
+  </StyledMatchForm>
 }

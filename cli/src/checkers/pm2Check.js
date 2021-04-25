@@ -6,7 +6,7 @@ const pm2Check = () => {
 
   const checkerResult = spawned('pm2');
 
-  return checkerResult
+  return !(checkerResult.stderr && checkerResult.stderr.toString().length)
 }
 
 module.exports = pm2Check

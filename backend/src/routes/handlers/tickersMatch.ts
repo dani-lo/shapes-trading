@@ -29,8 +29,6 @@ export const tickersMatch = (req : Request, res: Response) => {
 
       pyEngineCall('../st_engine/run_donchian.py', [ JSON.stringify(matchSettings) ], 
         function (dataBuffer : Buffer) {
-          console.log('===============================================================')
-          console.log(dataBuffer.toString())
           matches[i] += dataBuffer.toString()
         },
         function() {
@@ -39,12 +37,9 @@ export const tickersMatch = (req : Request, res: Response) => {
 
           if (fetched === settings.to_ticker.length) {
             
-            console.log('----- DONE --- ')
-
             try {
               const fullMatch = Object.values(matches).reduce((acc, curr) => {
-                console.log('======================cuuuuuuu', curr.length)
-                console.log(curr)
+
                 const arrCurr = curr && curr.length > 0 ? JSON.parse(curr) : []
                 return acc.concat(arrCurr)
               }, [])
@@ -57,7 +52,6 @@ export const tickersMatch = (req : Request, res: Response) => {
                 data: fullMatch
               })
             } catch (err) {
-              console.log('ERROR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
               console.log(err)
               res.status(200).json({
                 success: false,

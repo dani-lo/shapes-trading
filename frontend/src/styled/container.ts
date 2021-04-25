@@ -35,7 +35,7 @@ const STBox = styled.div<{
   ${ props => props.width ? 'width:' + props.width  + ';'  : ''}
   ${ props => props.widthpx ? 'width:' + props.widthpx  + 'px;' : ''}
   ${ props => props.height ? 'height:' + props.height  + ';'  : ''}
-  ${ props => props.border ? 'border-style: solid;border-color:' + props.theme.colors.border.primary + ';border-width:' + props.border : ';'}
+  ${ props => props.border ? 'border-style: solid;border-color:' + props.theme.colors.border.primary + ';border-width:' + props.border + ';' : ''}
   ${ props => props.stick ? 'position: absolute;top: 0;' + props.stick  + ': 1rem;'  : ''}
 `
 

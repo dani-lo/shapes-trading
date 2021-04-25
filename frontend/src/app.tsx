@@ -16,18 +16,10 @@ const wrapper = document.getElementById('container')
 
 const App = (
   <ThemeProvider theme={theme}>
-    <STElement.STApp>
+    <STElement.STApp  id="app">
       <STContextProvider>
-        <STElement.STFlexBox 
-          style={{position: 'relative', left: '100px', width: 'calc(100% - 100px)'}} 
-          direct="row">
-          <STElement.STBox>
-            <MatchForm />
-          </STElement.STBox>
-          <STElement.STBox>
-            <MatchesList />
-          </STElement.STBox>
-        </STElement.STFlexBox>
+        <MatchForm />
+        <MatchesList />
         <STElement.STHeader className="padding-two">
           <AppSidebar />
         </STElement.STHeader>

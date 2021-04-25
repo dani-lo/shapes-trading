@@ -7,7 +7,7 @@ const pyCheck = () => {
     const libCheckScript = `${ __dirname }/pyCheck.py`
     const checkerResult = spawned('python', [libCheckScript]);
 
-    return checkerResult
+    return !(checkerResult.stderr && checkerResult.stderr.toString().length)
   
 }
 

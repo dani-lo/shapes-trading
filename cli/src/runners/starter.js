@@ -1,33 +1,72 @@
 const pyCheck = require("../checkers/pyCheck");
 const pm2Check = require("../checkers/pm2Check");
+const mongoCheck = require("../checkers/mongoCheck");
 
 const say = require("../util/say");
 
-const childProcSync = require('child_process').execSync
+const childProcSync = require('child_process').execSync;
 
 const startApp = async (pathApp) => {
 
+  const bot = new say.Teller();
   const pyResult = pyCheck();
 
-
-  if (pyResult.stderr && pyResult.stderr.toString().length) {
-      console.log(pyResult.stderr.toString())
-
-    say.sayNo(`Python is not aware of the st_engine modules. Try running "export PYTHONPATH=${ pathApp }/st_engine"`);
-    return;
+  if (!pyResult) {
+    bot.addNo(`Python is not aware of the st_engine modules. `);
+    bot.addMayb('Try running "export PYTHONPATH=${ pathApp }/st_engine""');
+  } else {
+    bot.addYes('Checking Python path: successful. You can run st_engine modeules');
   }
-
-  say.sayYes('Checking Python: successful. You can run st_engine modeules');
 
   const pm2Result = pm2Check();
 
-  if (pm2Result.error ||  (pm2Result.stderr && pm2Result.stderr.toString().length)) {
-    say.sayNo('PM2 is not installed. Try running "npm install pm2 -g"');
+  if (!pm2Result) {
+    bot.addNo('PM2 is not installed');
+    bot.addMayb('Try running "npm install pm2 -g"');
+  } else {
+    bot.addYes('Checking PM2: successful. You can run this app');
+  }
+  
+  const mongoResultInstall = mongoCheck.mongoCheckInstall();
+
+  if (!mongoResultInstall) {
+    bot.addNo('Error checking Mongo database: Mongo is not installed');
+    bot.addMayb('You need to have Mongo installed');
     return 
+  } else {
+    bot.addYes('Checking Mongo installation: successful. Mongo is installed');
+  }
+  
+  const mongoResultRunning = mongoCheck.mongoCheckRunning();
+
+  if (!mongoResultRunning) {
+    bot.addNo('Error checking Mongo database: your local mongo is not running');
+    bot.addMayb('Start your local mongo');
+  } else {
+    bot.addYes('Checking Mongo status: successful. Mongo is running')
   }
 
-  say.sayYes('Checking PM2: successful. You can run this app');
+  // const mongoResultDb = mongoCheck.mongoCheckDB();
+
+  // if (mongoResultRunning) {
+  //   if (!mongoResultDb) {
+  //     bot.addNo('Error checking Mongo database: you dont have the required database setup');
+  //     bot.addMayb('Crete a new Mongo database named "shapes-trading"');
+  //   } else {
+  //     bot.addYes('Checking Mongo database: successful. Mongo database is ready');
+  //   }
+  // }
   
+
+  if (bot.somethingToSay()) {
+    const proceed = !bot.anthingBadToSay()
+    bot.speakup()
+
+    if(!proceed) {
+      return
+    }
+  }
+
   childProcSync('npm install', {cwd: `${pathApp}/frontend`, stdio: 'inherit'});
   childProcSync('npm install', {cwd: `${pathApp}/backend`, stdio: 'inherit'});
 

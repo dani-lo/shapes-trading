@@ -10,7 +10,9 @@
             "name": "st-backend",
             "cwd": "backend",
             "script": "npm",
-            "args" : "start"
+            "args" : "start",
+            "error_file": "backend-err.log",
+            "out_file": "backendout.log"
         }
     ]
 }
