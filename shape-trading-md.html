@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title></title>
+    <style type="text/css">
+      body {
+        padding: 0 2rem;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      #root {
+        width: 50%;
+        margin: 0 auto;
+      }
+      h1 {
+        background :#fd4659;
+        color: #fff;
+        font-size: 1.8rem;
+        text-align: center;
+        padding: 1rem;;
+      }
+
+      h2 {
+        text-transform:capitalize;
+        font-size: 1.5rem;
+        border-top: 1px dotted #ccc;
+        padding: 1rem 0 0;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+        color: #fd4659;
+        margin-top: 2rem;
+      }
+
+      h4 {
+        font-size: 1rem;
+        color: #fd4659;
+        margin-top: 1rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      .illustration {
+        padding: 1rem 0;
+        margin: 1rem 0;
+      }
+
+      .illustration img {
+        width: 100%;
+        border: 1px solid #eee;
+        border-width: 1px 0;
+      }
+
+      .illustration  p {
+        font-size: 0.75rem;
+        font-style: italic;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root">
+    <h1>Shapes Trading</h1>
+    <p>This is my lockdown fun project</p>
+    <p>I tinker with trading and always wondered if it was possible to use visual indicators to comparse financial instruments in a "visual" manner: i.e extrapolating 'vectorial' characteristic from an indicator and comparing it with the same vectorial transformation of a different instrument</p>
+    <h3>Why "Shape"?</h3>
+    <p>This app uses Donchian channels as a means of comparisons between instrument. The idea behid this app ios to match shannel froma POC of shape, rather than attempting to detect channel breakouts or other uch traditional tradibng approaches</p>
+    <p>if a match is found in the way 2 different instruments move over time (by looking at how the indicators which abstract the movement compare as shapes),  we could hypotise that the subsequent moves might be similar, thus gaining an insight over the overall plausible direction of acertain instrument price</p>
+    <p>Please refer to the following detailed guide to understand how this application works, in particular the logic behind channels comparisons</p>
+    <p>Please note: this document and application, do not constitute financial advice; this is just a fun lockdown project to get a bit more comfortable with Python, mostly :-)</p>
+    <h2>Principles (shapes matching logic)</h2>
+<p>Following a brief resume of all the ideas used to re-segments the donchian channel and operate shapes (and directionality) based matching on them across instruments</p>
+
+<h3>1. Donchian Channels</h3>
+<p>The Donchian channel is an indicator formed by taking the highest high and the lowest low of the last N periods (data points(. The area between the high and the low is the channel for the period chosen.</p>
+
+<div class="illustration">
+<img src="./md-assets/channel-boundaries.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+
+
+<h3>2. Channels Lookback Smoothening</h3>
+<p>Since channels are calculated by taking the lowest or highest value over an N period, a channel can easily be 'rugged' - i.e over a short amounts of periods it can undertake several changes of direction (flat, up, flat, up), tipically expressing rallying price action.</p>
+<div class="illustration">
+<img src="./md-assets/channel-smoothening.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+<p>This characteristic makes shape comparison hard because during such rallies the channel boundaries are npt consistent: price migh go up over Y amount of days, but in between it might also see periods of pause in which the channel looks flat. </p>
+<p>To accoint for this we use a ways of normalising the channels boundaries: so if for example, for X amount of datapoints the channel line has been going UP, unregarding the fact that it might have been flat for some datapoints, we will say that the overall direction for sake of comparison is UP. The amount of data points we use to look back and tell if the channel has been going up or down or neither, unregarding of the dataoints in between, is what we will erfer to as smoothening (and in the matching settings is represented by the parameter 'Channel Lookback')</p>
+
+
+<h3>3. Moving Average Bias</h3>
+<p>A moving average calculates the average of a selected range of prices, usually closing prices, by the number of periods in that range. The way it is caluclated here is by taking an amount of OHLC bars (an array representing a day high, low, open and close prices), calculating an average for each of them ((O + H + l + C) / 4), summing up all the ohlc averages and takign an average of that by dividing the resulting value times the periods selected in the settings</p>
+
+<div class="illustration">
+<img src="./md-assets/ma.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+<p>Here, moving averages are used simply to add a layer of discrimination to the matching process: each segmentation will retain an indication of the moving average direction (rising, falling or flat) which will be used to filter out matches (only matches with same MA direction will be retained). Uses can indicate the length of price periods (bars, or candles) to be used to calculate the average</p>
+
+ 
+
+<h3>4. First and Last Close Quadrant</h3>
+<p>Another key matching parameter is the close 'quadrant' (perhaps not a fitting name: upon data parsing, each segment will be assigned a close quadrant value, which indicates in which section of the enclosing channel the price closed: for eaxmple if the close of a segment is near the lower channel ,this will be assigned a low final close quadrant value. If close to the upper channel, the value will instead be high</p>
+
+<div class="illustration">
+<img src="./md-assets/channel-close-quadrant.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+
+<p>This is used in matching by only allowing matches where the last segment closes in the same quadrant as the matching instrument up to a tolerance value (which can be indicated in the settings)
+
+
+<h3>5. Channel Width at Segment</h3>
+<p>The final discriminants to allow or reject matches are steepness and width
+
+<div class="illustration">
+<img src="./md-assets/channel-width.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+
+<p>A segment wil reating an indication of its width: since we only ever match upper or lower channel shape (liek up flat up flat down, that is a shape), the width of the channel at each segemtn (i.e the difference between upper and lower channel0 will be assigned to the segments: only segments with similar widths, up to a user setting tolerance, will be allowed as matches</p>
+
+<h3>6. Segment Steepness</h3>
+<p>As for steepness, this is simply an indication of how many data points it took ro a segment to complate, and related to how far up or down it went: when matching segments, we do not want to allow a match between an UP channel which covered (for example) 10% ofthe starting price in 4 data points (candels, or bars) to another one which went up 5% of the initial price and took 50 data points to do so. Steepness uses a tolerance factor, and this can also be set in the match form</p>
+
+<div class="illustration">
+<img src="./md-assets/channel-steepness.png" />
+<p>A Donchian channel visualisation, with low and high channel boundaries highlighted</p>
+</div>
+<h2>How to use</h2>
+<p>the app is ocmposed of 3 sections: matching form, matching results list and utilities</p>
+<div class="illustration">
+<img src="./md-assets/app-overview.png" />
+<p>A full view of the app with matches loaded</p>
+
+</div>
+
+<h3>Matching Form</h3>
+<p>The matchinbg form is where we enter parameters that will be passed to the st matching engine to find channel matches between tickers.</p>
+<p>The ticker selected as "main" will be natched against each ticker available within the data folder (NOTE these ticker can be initiated or refreshed via the Refresh Tickers utility (see below)</p>
+<p>The parameter specified will determine how the main ticker is matched against all available tickers. See this guide for both an explanation of the matchign principles and detail of each matching paameter</p>
+
+<h3>Matching Results</h3>
+<p>if matches are found, the matches result list will populate</p>
+<p>Each match result can be saved, and will afterwards appear in the left hand side utility 'Saved Matches'</p>
+<p>Each match can be viewed in an overlay. NOTE since a match is fetched from start to end of the matching segments, it is necessary to add some padding before and after the matches data (to gic an idea of what happened before and after the match, so we can decide if the context looks right and we can see what happened after the amtch itself (which is th whole point of predicting price meovements). To do this we use a setting within the matching form which determines how many bars before and after the match are fetched for display</p>
+
+<div class="illustration">
+<img src="./md-assets/match-pad.png" />
+<p>A found match example</p>
+
+</div>
+
+
+<h3>Utilities - Save Match Settings</h3>
+<p>When saving a match setting this will appear in a list which can be expanded from the left hand side bar</p>
+<p>Upon loading a saved match settings, the main form will populate with the saved settings: click the go button to then run the form</p>
+<h3>Utilities - Save Match</h3>
+<p>Single matches can be saved: upon saving they will appear in the left hand side section 'Saved Matches'</p>
+<p>Click a Saved Match to view it immediately within the match result modal UI</p>
+
+<h3>Utilities - Refresh Tickers</h3>
+<p><b>Tickers</b> represent equities, or any finanaial instrument</p>
+<p>This app works by comparing hiostoric data ticker by ticker: to do so it needs the data itself to be loaded</p>
+<p>By entering a ticker in this left hand side bar utility's input, the ticker will be looked up on yahoo market data portal and the data for it downloaded over a 20yrs span (daily data)</p>
+<p>Once a ticker is loaded thus, it will appear in the dropdown to select main ticker for comparison, and its data will be used for comparison with main tickers (if it is not running itself as the main ticker)</p>
+<h2>Matching Paramters</h2>
+<h4>Main Ticker</h4>
+
+<p>this is the main equity (or index, or commodity and so on) symbol. The selection wil be used as the main comparison instrument, meaning it will appear in all reasults as the first entry: all other tickers will be used segemnted and used to look for a pattern matching any of the segments found on the main icker</p>
+
+<h4>Channel Target</h4>
+
+<p>this indicates whether the segmentation (and segments matching) will be done on the upper or lower donchian channel</p>
+
+<h4>vs (index from)</h4>
+
+<p>out of the rray of all the avialeble ticker for matching, this parameter indicates what is the first ticker for consideration (and its associated data) within said array. Reducing the amount of tickers for matching speeds up parsing time, but it also means less results will be found</p>
+
+<h4>vs (index to)</h4>
+
+<p>out of the rray of all the avialeble ticker for matching, this parameter indicates what is the lest ticker for consideration (and its associated data) within said array. Reducing the amount of tickers for matching speeds up parsing tim		e, but it also means less results will be found</p>
+
+<h4>Donchian Period</h4>
+
+<p>the amount of data points (for example, one day OHLC candles) used to calculate the base Donchian channels</p>
+
+<h4>	MA Lookback</h4>
+
+<p>when figuring out if the moving average is flat, up or down, the algorithm needs to compare the current value for the moving average (at each iteration) with a value in the past. The lookback parameter determines how far back (how many candles, or datapoints) should be used for the lookback</p>
+
+<h4>First close tolerance</h4>
+
+<p>For the purpose of matching quadrants, this setting indicates how much tolerance to apply in determining if one segment close area (with respect to the enclosing donchian chanel) can b matched with an other instrument's close area. This setting is applied to the first data point  close of the first segment when matching 2 seqeunces of segments</p>
+
+
+<h4>Last close tolerance</h4>
+
+<p>For the purpose of matching quadrants, this setting indicates how much tolerance to apply in determining if one segment close area (with respect to the enclosing donchian chanel) can b matched with an other instrument's close area. This setting is applied to the last data point  close of the final segment when matching 2 seqeunces of segments</p>
+
+
+<h4>Steep tolerance</h4>
+
+<p>Thids setting determines the amount of channel steepness tolerance to be considered when matchig tho segments: if an instrument segment steepness differs from its match by more than this amount, the match will be dicarded</p>
+
+<h4>Width tolerance</h4>
+
+<p>This setting determines the amount of channel width tolerance to be considered when matchig tho segments: if an instrument segment width (calculated by subtracting the upper and lower channel boundaries) differs from its match by more than this amount, the match will be dicarded</p>
+
+<h4>Chain Length</h4>
+
+<p>Whaen lookign for mtches, this setting will tell the parser how many segments should compose a matching sequebnce of segments. For example, by settin this value to 4, all segmentations will be composed of 4 segments (i.e UP FLAT DOWN FLAT) and the subsequebnt matching will be carried throguh on a series of 4 items segmentations. The higher this value, the more precise the match</p>
+
+<h4>MA period</h4>
+
+<p>when figuring out if the moving average is flat, up or down, the algorithm needs to compare the current value for the moving average (at each iteration) with a value in the past. The MA period parameter determines the base moving average length (i.e how many data points the mving average will use for its calculation)</p>
+
+<h4>Channel Lookback</h4>
+
+<p>When smoothening the channel (i.e eliminating short term channel variations), we need to now how far back to look back to discaard short variations of the channel bounday. This setting tells us that</p>
+
+<h4>Forward Pad From</h4>
+
+<p>This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'FROM' instrument (i.e the instrument we are searching matches for, the main ticker)</p>
+
+<h4>Forward Pad To</h4>
+
+<p>This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'TO' instrument (i.e the instrument which presents similarities to the main ticker, in other words the actual predictor, the instrument whch we are looking for to determine the possible future direction of the main ticker)</p>
+
+<h4>Backward Pad From</h4>
+
+<p>This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'FROM' instrument (i.e the instrument we are searching matches for, the main ticker)</p>
+
+<h4>Backward Pad To</h4>
+
+<p>This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'TO' instrument (i.e the instrument which presents similarities to the main ticker, in other words the actual predictor, the instrument whch we are looking for to determine the possible future direction of the main ticker)</p>
+
+
+</div>
+<!--
+MATCHING PARAMETERS
+
+<h4>Main Ticker
+
+this is the main equity (or index, or commodity and so on) symbol. The selection wil be used as the main comparison instrument, meaning it will appear in all reasults as the first entry: all other tickers will be used segemnted and used to look for a pattern matching any of the segments found on the main icker
+
+<h4>Channel Target
+
+this indicates whether the segmentation (and segments matching) will be done on the upper or lower donchian channel
+
+<h4>vs (index from)
+
+out of the rray of all the avialeble ticker for matching, this parameter indicates what is the first ticker for consideration (and its associated data) within said array. Reducing the amount of tickers for matching speeds up parsing time, but it also means less results will be found
+
+<h4>vs (index to)
+
+out of the rray of all the avialeble ticker for matching, this parameter indicates what is the lest ticker for consideration (and its associated data) within said array. Reducing the amount of tickers for matching speeds up parsing tim		e, but it also means less results will be found
+
+<h4>Donchian Period
+
+the amount of data points (for example, one day OHLC candles) used to calculate the base Donchian channels
+
+<h4>	MA Lookback
+
+when figuring out if the moving average is flat, up or down, the algorithm needs to compare the current value for the moving average (at each iteration) with a value in the past. The lookback parameter determines how far back (how many candles, or datapoints) should be used for the lookback
+
+<h4>First close tolerance
+
+For the purpose of matching quadrants, this setting indicates how much tolerance to apply in determining if one segment close area (with respect to the enclosing donchian chanel) can b matched with an other instrument's close area. This setting is applied to the first data point  close of the first segment when matching 2 seqeunces of segments
+
+
+<h4>Last close tolerance
+
+For the purpose of matching quadrants, this setting indicates how much tolerance to apply in determining if one segment close area (with respect to the enclosing donchian chanel) can b matched with an other instrument's close area. This setting is applied to the last data point  close of the final segment when matching 2 seqeunces of segments
+
+
+<h4>Steep tolerance
+
+Thids setting determines the amount of channel steepness tolerance to be considered when matchig tho segments: if an instrument segment steepness differs from its match by more than this amount, the match will be dicarded
+
+<h4>Width tolerance
+
+This setting determines the amount of channel width tolerance to be considered when matchig tho segments: if an instrument segment width (calculated by subtracting the upper and lower channel boundaries) differs from its match by more than this amount, the match will be dicarded
+
+<h4>Chain Length
+
+Whaen lookign for mtches, this setting will tell the parser how many segments should compose a matching sequebnce of segments. For example, by settin this value to 4, all segmentations will be composed of 4 segments (i.e UP FLAT DOWN FLAT) and the subsequebnt matching will be carried throguh on a series of 4 items segmentations. The higher this value, the more precise the match
+
+<h4>MA period
+
+when figuring out if the moving average is flat, up or down, the algorithm needs to compare the current value for the moving average (at each iteration) with a value in the past. The MA period parameter determines the base moving average length (i.e how many data points the mving average will use for its calculation)
+
+<h4>Channel Lookback
+
+When smoothening the channel (i.e eliminating short term channel variations), we need to now how far back to look back to discaard short variations of the channel bounday. This setting tells us that
+
+<h4>Forward Pad From
+
+This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'FROM' instrument (i.e the instrument we are searching matches for, the main ticker)
+
+<h4>Forward Pad To
+
+This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'TO' instrument (i.e the instrument which presents similarities to the main ticker, in other words the actual predictor, the instrument whch we are looking for to determine the possible future direction of the main ticker)
+
+
+
+
+<h4>Backward Pad From
+
+This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'FROM' instrument (i.e the instrument we are searching matches for, the main ticker)
+
+<h4>Backward Pad To
+
+This setting has no influence on the actual matching: it simply tells the backend how many datapoints to fetch after the last matched segment, so the resulting chart has more (or less) data points after the match and we can get a clearer (or less clear) idea of where the price went after the last matched segment. This setting applies to the datapoint fetched to plot a match for the 'TO' instrument (i.e the instrument which presents similarities to the main ticker, in other words the actual predictor, the instrument whch we are looking for to determine the possible future direction of the main ticker)
+
+
+-->
+
+  </body>
+</html>
+
+
+
+
+
+
