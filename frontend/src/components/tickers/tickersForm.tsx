@@ -11,7 +11,6 @@ export const TickersForm = () : JSX.Element => {
     
     const arrTickers = tickers.replace(/\s/g, '').split(',')
 
-    console.log(arrTickers)
 
     refreshTickers(arrTickers)
     .then((res) => {

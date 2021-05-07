@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react' 
+import Tippy from '@tippyjs/react';
 
 import { useSTContext } from '@component/provider'
 import { MatchModal } from '@component/matches/matchesModal'
@@ -24,10 +25,15 @@ export const SavedMatchesList = () : JSX.Element => {
     })
   }, [])
 
-  return  <>
+  return  <div className="sidebar-widget">
     { 
       !savedMatches || savedMatches.length === 0 ? <LoadingComponent /> : null
     }
+    <STElement.STBox className="padding">
+      <h4>Saved matches</h4>
+      <p>See the matches yu saved and load them (this will show the match in an overlay, in the same way as if you were seing a match result from a full form setuo.</p>
+      <p>Note you can hide matches and these will not show unless you tick on <b>Include hidden</b></p>
+    </STElement.STBox>
     <STElement.STBox className="padding">
       <WidgetMatchSetting
           label="Include Hidden"
@@ -37,7 +43,9 @@ export const SavedMatchesList = () : JSX.Element => {
             setIncludehidden(opt.target.checked)
           }} 
         />
+        
     </STElement.STBox>
+    
     {
       savedMatches.filter(m => includehidden ? true : m.visible).map((savedMatchItem, i) => {
   
@@ -57,37 +65,45 @@ export const SavedMatchesList = () : JSX.Element => {
                 { matchFrom.begin } to { matchFrom.end }
               </STElement.STPara>
             </STElement.STBox>
-            <STElement.STButton 
-                onClick={ () => { 
-                  setCurrmatch(matchItem) 
-                }} 
-                className="margin-half-right">
-              <i className="fa fa-arrow-right" aria-hidden="true"></i>
-            </STElement.STButton>
-            { savedMatchItem.visible ? 
+            <Tippy content="View this saved match" placement="bottom" theme="light">
               <STElement.STButton 
-                onClick={ () => { 
-                  hideSavedMatch(savedMatchItem._id) 
-                  hideCtxSavedMatch(savedMatchItem)
-                }} 
-                className="margin-half-right">
-                <i className="fa fa-eye-slash" aria-hidden="true"></i>
-              </STElement.STButton> :
-              <STElement.STButton 
-                onClick={ () => { 
-                  showSavedMatch(savedMatchItem._id) 
-                  showCtxSavedMatch(savedMatchItem)
-                }} 
-                className="margin-half-right">
-                <i className="fa fa-eye" aria-hidden="true"></i>
+                  onClick={ () => { 
+                    setCurrmatch(matchItem) 
+                  }} 
+                  className="margin-half-right">
+                <i className="fa fa-arrow-right" aria-hidden="true"></i>
               </STElement.STButton>
+            </Tippy>
+            { savedMatchItem.visible ? 
+              <Tippy content="Make saved match non visible" placement="bottom" theme="light">
+                <STElement.STButton 
+                  onClick={ () => { 
+                    hideSavedMatch(savedMatchItem._id) 
+                    hideCtxSavedMatch(savedMatchItem)
+                  }} 
+                  className="margin-half-right">
+                  <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                </STElement.STButton>
+              </Tippy> :
+              <Tippy content="Make match visible" placement="bottom" theme="light">
+                <STElement.STButton 
+                  onClick={ () => { 
+                    showSavedMatch(savedMatchItem._id) 
+                    showCtxSavedMatch(savedMatchItem)
+                  }} 
+                  className="margin-half-right">
+                  <i className="fa fa-eye" aria-hidden="true"></i>
+                </STElement.STButton>
+              </Tippy>
             }
-            <STElement.STButton 
-              onClick={ () => {
-                removeSavedMatch(savedMatchItem._id) 
-              }}>
-              <i className="fa fa-trash" aria-hidden="true"></i>
-            </STElement.STButton>
+            <Tippy content="Delete saved match" placement="bottom" theme="light">
+              <STElement.STButton 
+                onClick={ () => {
+                  removeSavedMatch(savedMatchItem._id) 
+                }}>
+                <i className="fa fa-trash" aria-hidden="true"></i>
+              </STElement.STButton>
+            </Tippy>
             </STElement.STFlexBox>
         </STElement.STBox>
       })
@@ -96,5 +112,5 @@ export const SavedMatchesList = () : JSX.Element => {
     onClose={ () =>  setCurrmatch(null) } 
     match={ currmatch } 
   />
-  </>
+  </div>
 }

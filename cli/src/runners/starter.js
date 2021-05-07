@@ -13,7 +13,7 @@ const startApp = async (pathApp) => {
 
   if (!pyResult) {
     bot.addNo(`Python is not aware of the st_engine modules. `);
-    bot.addMayb('Try running "export PYTHONPATH=${ pathApp }/st_engine""');
+    bot.addMayb(`Try running "export PYTHONPATH=${ pathApp }/st_engine"`);
   } else {
     bot.addYes('Checking Python path: successful. You can run st_engine modeules');
   }

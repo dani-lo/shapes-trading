@@ -27,14 +27,16 @@ export const MatchForm = (): JSX.Element => {
           setMatchOptions, 
           setLoading, 
           addSavedMatchOptions,
-          stStore } = useSTContext()
+          stStore,
+          notify } = useSTContext()
   
-  
+  console.log(stStore)
+
   const tickersData = stStore.tickers.data as ITicker[]
   const matchData = stStore.matches.data as [IMatch, IMatch][]
 
   useEffect(() => {
-    fetchTickers().then((t) => {
+    !tickersData || !tickersData.length && fetchTickers().then((t) => {
       
       stStore.tickers.init( t.map(ticker => {
 
@@ -67,16 +69,29 @@ export const MatchForm = (): JSX.Element => {
   const tickerOptions = tickersData.map(t => ({label: t.name, value: t.value }))
 
   const getMatch = () => {
+    
+    //notify('aaaaaaaaa', 'success')
     setLoading(true)
+
     matchTickers(matchOptions).then(res => {
+      console.log(res)
       setLoading(false)
       
       stStore.matches.init(res)
     }).catch((e) => {
       setLoading(false)
 
-      stStore.matches.init([])
+      stStore.matches.init(null)
     })
+  }
+
+  const onOption = (opts) => {
+
+    if (matchData !== null) {
+      stStore.matches.init(null)
+    }
+    
+    setMatchOptions(opts)
   }
 
   let minDate, maxDate 
@@ -101,7 +116,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.options }
           values={ tickerOptions.filter(t => t.label === matchOptions.from_ticker) }
           options={ tickerOptions }
-            onOptionChange={ (opt) => setMatchOptions({
+            onOptionChange={ (opt) => onOption({
               from_ticker: opt[0].label          
             })} 
         />
@@ -112,7 +127,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.options }
           values={ [ {label: matchOptions.donchian_channel_target, value: matchOptions.donchian_channel_target } ]}
           options={ [{label: 'high', value: 'high'}, {label: 'low', value: 'low'}] }
-          onOptionChange={ (opt) => setMatchOptions({
+          onOptionChange={ (opt) => onOption({
             donchian_channel_target: opt[0].value 
           })} 
         />
@@ -130,7 +145,7 @@ export const MatchForm = (): JSX.Element => {
           maxDate={ maxDate}
           disabled={ !matchOptions.from_ticker }
           onDateChange={date => {
-            setMatchOptions({ target_range_from : formatDate(date as Date)})
+            onOption({ target_range_from : formatDate(date as Date)})
           }}
         />
       </STElement.STBox>
@@ -143,7 +158,7 @@ export const MatchForm = (): JSX.Element => {
           maxDate={ maxDate}
           disabled={ !matchOptions.from_ticker }
           onDateChange={date => {
-            setMatchOptions({ target_range_to : formatDate(date as Date)})
+            onOption({ target_range_to : formatDate(date as Date)})
           }}
         />
       </STElement.STBox>
@@ -163,7 +178,7 @@ export const MatchForm = (): JSX.Element => {
               setCompindexes([Number(idx), compindexes[1]])
 
               debounce(() => {  
-                setMatchOptions({
+                onOption({
                   to_ticker: tickersData.slice(Number(idx), Number(compindexes[1])).map(t => t.name)
                 })
               }, 400)()
@@ -179,10 +194,10 @@ export const MatchForm = (): JSX.Element => {
             onTxtChange={(e : IInputValue) => {
               
               const idx = e.target.value
-              setCompindexes([compindexes[0], Number(e.target.value)])
+              setCompindexes([compindexes[0], Number(idx)])
 
               debounce(() => {
-                setMatchOptions({
+                onOption({
                   to_ticker:tickersData.slice(Number(compindexes[0]), Number(idx)).map(t => t.name)
                 })
               }, 400)()
@@ -196,7 +211,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.donchian_period) }
           onTxtChange={(e : IInputValue) => {
-            setMatchOptions({ donchian_period : Number(e.target.value) })
+            onOption({ donchian_period : Number(e.target.value) })
           }}
         />
       </STElement.STBox>
@@ -210,7 +225,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.ma_direction_lookback) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               ma_direction_lookback: Number(opt.target.value)
             })
         }}/>
@@ -221,7 +236,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.start_quadrant_tolerance) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               start_quadrant_tolerance: opt.target.value
             })
         }}/>
@@ -232,7 +247,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.final_quadrant_tolerance) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               final_quadrant_tolerance: opt.target.value
             })
         }}/>
@@ -247,7 +262,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.match_steep_diff_max) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               match_steep_diff_max: opt.target.value 
             })
         }}/>
@@ -258,7 +273,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.match_rel_width_max) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               match_rel_width_max: opt.target.value
             })
         }}/>
@@ -267,10 +282,10 @@ export const MatchForm = (): JSX.Element => {
       <WidgetMatchSetting
           label="Chain Length"
           type={ ESettingType.text }
-          val={ String(matchOptions.anal_segments_len) }
+          val={ String(matchOptions.analyse_segments_len) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
-              anal_segments_len: Number(opt.target.value)
+            onOption({
+              analyse_segments_len: Number(opt.target.value)
             })
         }}/>
       </STElement.STBox>
@@ -284,7 +299,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.ma_period) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               ma_period: Number(opt.target.value)
             })
         }}/>
@@ -295,7 +310,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.lookback_correction_bars) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               lookback_correction_bars: Number(opt.target.value)
             })
         }}/>
@@ -306,7 +321,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.fpad_from) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               fpad_from:Number(opt.target.value)
             })
         }}/>
@@ -321,7 +336,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.bpad_from) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               bpad_from: Number(opt.target.value)
             })
           }}/>
@@ -332,7 +347,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.fpad_to) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               fpad_to:Number(opt.target.value)
             })
         }}/>
@@ -343,7 +358,7 @@ export const MatchForm = (): JSX.Element => {
           type={ ESettingType.text }
           val={ String(matchOptions.bpad_to) }
           onTxtChange={ (opt) => {
-            setMatchOptions({
+            onOption({
               bpad_to: Number(opt.target.value)
             })
           }}/>

@@ -48,7 +48,7 @@ export interface IMatchSettings {
   ma_direction_lookback: number,
   lookback_correction_bars: number,
   donchian_channel_target : 'high' | 'low',
-  anal_segments_len: number,
+  analyse_segments_len: number,
   from_ticker ?: string,
   to_ticker ?: string[],
   target_range_from: string,

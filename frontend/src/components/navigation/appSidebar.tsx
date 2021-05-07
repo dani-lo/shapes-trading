@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Sidebar from "react-sidebar";
+import Tippy from '@tippyjs/react';
 
 import { SavedMatchesList } from '@component/matches/savedmatchesList'
 import { SavedMatchOptionsList } from '@component/matches/savedmatchOptionsList'
@@ -91,30 +92,36 @@ export const AppSidebar = () : JSX.Element => {
       }}
       styles={ styles }
     >
-      <STElement.STIconButton 
-        className="fa fa-line-chart  margin-two-top padding-top padding-left padding-right txt-large" 
-        aria-hidden="true" 
-        onClick={ () => {
-          setActiveui(sidebarUIs.SAVED_MATCHES)
-          setIsopen(true) 
-        }}
-      />
-      <STElement.STIconButton 
-        className="fa fa-tasks  margin-two-top padding-top padding-left padding-right txt-large" 
-        aria-hidden="true" 
-        onClick={ () => {
-          setActiveui(sidebarUIs.SAVED_MATCH_OPTIONS)
-          setIsopen(true) 
-        }}
-      />
-      <STElement.STIconButton 
-        className="fa fa-refresh  margin-two-top padding-top padding-left padding-right txt-large" 
-        aria-hidden="true" 
-        onClick={ () => {
-          setActiveui(sidebarUIs.REFRESH_TICKERS)
-          setIsopen(true) 
-        }}
-      />
+      <Tippy content="View saved matches by ticker" placement="right" theme="light">
+        <STElement.STIconButton 
+          className="fa fa-line-chart  margin-two-top padding-half-top padding-half-bottom padding-left padding-right txt-large" 
+          aria-hidden="true" 
+          onClick={ () => {
+            setActiveui(sidebarUIs.SAVED_MATCHES)
+            setIsopen(true) 
+          }}
+        />
+      </Tippy>
+      <Tippy content="View saved match settings by ticker" placement="right" theme="light">
+        <STElement.STIconButton 
+          className="fa fa-tasks  margin-two-top padding-half-top padding-half-bottom padding-left padding-right txt-large" 
+          aria-hidden="true" 
+          onClick={ () => {
+            setActiveui(sidebarUIs.SAVED_MATCH_OPTIONS)
+            setIsopen(true) 
+          }}
+        />
+      </Tippy>
+      <Tippy content="Load or refresh tickers data" placement="right" theme="light">
+        <STElement.STIconButton 
+          className="fa fa-refresh  margin-two-top padding-half-top padding-half-bottom  padding-left padding-right txt-large" 
+          aria-hidden="true" 
+          onClick={ () => {
+            setActiveui(sidebarUIs.REFRESH_TICKERS)
+            setIsopen(true) 
+          }}
+        />
+      </Tippy>
     </Sidebar>
   );
 } 

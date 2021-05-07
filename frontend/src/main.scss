@@ -5,6 +5,9 @@ body {
   background: #f9f9f9;
 }
 
+:root {
+  --txt-dark : #333;
+}
 // padding 0
 .padding-none        { padding: 0!important; }
 .padding-none-top         { padding-top: 0!important; }
@@ -87,7 +90,7 @@ body {
   background: rgba(123, 123, 123, 0.2)
 }
 .react-responsive-modal-modal {
-  max-width: none;
+  max-width: 1200px;
   padding: 3em!important;
   box-shadow: none;
 }
@@ -96,4 +99,8 @@ body {
     color: #2d3747;
   }
 }
-
+.sidebar-widget {
+  h3, h4, p {
+    color: var(--txt-dark);
+  }
+}

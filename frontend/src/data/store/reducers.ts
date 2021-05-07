@@ -16,17 +16,16 @@ export const priceTickersReducer = (
 }
 
 export const priceMatchesReducer = (
-    state : [IMatch, IMatch][], 
+    state : [IMatch, IMatch][] | null, 
     action: {
       type: string,
       payload:  [IMatch, IMatch][]
     }): [IMatch, IMatch][] => {
-
-  if (action.type == 'init') {
-
-    return action.payload.map(matchPriceitem => {
-      return matchPriceitem
-    })
+  
+  if (action.type == 'init' && action.payload) {
+    return action.payload
+  } else if (action.type == 'init' && action.payload === null) {
+    return null
   }
   return state
 }

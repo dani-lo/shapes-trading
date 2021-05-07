@@ -10,7 +10,6 @@ const drawCandlePatterns = (ohlcData, svg, xScale, yScale, xBand) => {
     let priceVal
 
     if (d.bull_engulf) {
-      console.log('BULL E at ', d)
       priceVal = parseFloat(d.Donchian.Low)
 
       svg.append("circle")
@@ -20,7 +19,6 @@ const drawCandlePatterns = (ohlcData, svg, xScale, yScale, xBand) => {
         .style('fill', 'green')
 
     } else if (d.bear_engulf) {
-      console.log('BEAR E at ', d)
       priceVal = parseFloat(d.Donchian.High)
 
       svg.append("circle")

@@ -5,8 +5,6 @@ import { IMatch, ISavedMatch, IMatchSettings, ISavedMatchSettings } from '@allty
 export const saveMatch = (matchData: [IMatch, IMatch]) : Promise<ISavedMatch> => {
   const baseUrl = process.env.API_URL
 
-  console.log(matchData)
-
   return axios.post(`${ baseUrl }/save-match`, { matchData })
     .then(res => {
       const { data } = res.data
@@ -60,7 +58,7 @@ export const removeSavedMatch = (matchId : string) : Promise<string> => {
   return axios.post(`${ baseUrl }/remove-saved-match`, { _id : matchId })
     .then(res => {
       const { data } = res.data
-      console.log(data)
+
       return data
     })
 }

@@ -16,11 +16,16 @@ const MatchesListComponent = () : JSX.Element => {
   const { addCtxSavedMatch, stStore } = useSTContext()
   
   const matchData = stStore.matches.data as [IMatch, IMatch][]
-
+  
   return  <>
-    <STElement.STFlexBox wrap="wrap" className="margin-left">
+    <STElement.STFlexBox wrap="wrap" className="margin-left" >
+      {
+        matchData && !matchData.length ?
+        <STElement.STSubTitle className="padding">No matches for these settings</STElement.STSubTitle> :
+        null
+      }
     {
-      matchData.map((matchItem, i) => {
+      matchData && matchData.map((matchItem, i) => {
         
         const matchFrom = matchItem[0]
         const matchTo = matchItem[1]

@@ -9,7 +9,8 @@ import { priceTickersReducer,
          priceMatchesReducer } from '@store/reducers'
 
 interface IProps  {
-  children: JSX.Element[]
+  children: JSX.Element[];
+  notify: (txt: string, type: string) => void;
 }
 
 
@@ -35,10 +36,10 @@ interface ISTContext {
       data: ITicker[] | [IMatch, IMatch][]
     }
   }
-  
+  notify ?: (msg: string, type: string) => void;
 }
 
-const STContext = React.createContext({})
+const STContext = React.createContext<ISTContext>({})
 
 export const STContextProvider = (props : IProps) : JSX.Element => {
 
@@ -46,7 +47,7 @@ export const STContextProvider = (props : IProps) : JSX.Element => {
     const { appState, setLoading } = useAppState()
     const { savedMatches, initSavedMatches, addCtxSavedMatch, hideCtxSavedMatch, showCtxSavedMatch } = useSavedMatches() 
     const { savedMatchOptions, initSavedMatchOptions, addSavedMatchOption, showCtxSavedMatchOption, hideCtxSavedMatchOption, deleteCtxSavedMatchOption } = useSavedMatchOptions()
-    
+  
     const stStore = {}
 
     CrudStore<ITicker>(
@@ -60,7 +61,7 @@ export const STContextProvider = (props : IProps) : JSX.Element => {
       stStore,
       'matches',
       priceMatchesReducer,
-      []
+      null
     )
 
     const ctx = {
@@ -79,7 +80,8 @@ export const STContextProvider = (props : IProps) : JSX.Element => {
       addCtxSavedMatch, 
       hideCtxSavedMatch,
       showCtxSavedMatch,
-      stStore
+      stStore,
+      notify: props.notify
     }
 
     return <STContext.Provider value={ ctx }>

@@ -6,7 +6,7 @@ export const matchOptions : IMatchSettings = {
   ma_direction_lookback: 10,
   lookback_correction_bars: 3,
   donchian_channel_target : 'low',
-  anal_segments_len: 5,
+  analyse_segments_len: 5,
   from_ticker: '',
   to_ticker: [],
   target_range_from: '2020-01-01',

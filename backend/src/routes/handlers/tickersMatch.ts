@@ -43,7 +43,7 @@ export const tickersMatch = (req : Request, res: Response) => {
                 const arrCurr = curr && curr.length > 0 ? JSON.parse(curr) : []
                 return acc.concat(arrCurr)
               }, [])
-              
+              console.log(fullMatch)
               console.log('----- MATCH OK --- ')
 
               res.status(200).json({
