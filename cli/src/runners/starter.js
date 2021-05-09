@@ -67,7 +67,10 @@ const startApp = async (pathApp) => {
     }
   }
 
+  say.sayMaybe('>>>>>>>>>>>>>>> Installing Frontend modules');
   childProcSync('npm install', {cwd: `${pathApp}/frontend`, stdio: 'inherit'});
+
+  say.sayMaybe('>>>>>>>>>>>>>>> Installing Backend modules');
   childProcSync('npm install', {cwd: `${pathApp}/backend`, stdio: 'inherit'});
 
   childProcSync('pm2 start pm2.json');
