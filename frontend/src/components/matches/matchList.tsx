@@ -9,8 +9,6 @@ import { saveMatch } from '@api/match'
 import * as STElement from '@styled/index'
 import { IMatch } from '@alltypes/types'
 
-console.log('foo');
-
 const MatchesListComponent = () : JSX.Element => {
 
   const [currmatch, setCurrmatch] = useState(null)
