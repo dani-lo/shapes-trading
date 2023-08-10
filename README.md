@@ -2,13 +2,13 @@
 
 This is my lockdown fun project
 
-I tinker with trading and always wondered if it was possible to use visual indicators to comparse financial instruments in a "visual" manner: i.e extrapolating 'vectorial' characteristic from an indicator and comparing it with the same vectorial transformation of a different instrument
+I tinker with trading and always wondered if it was possible to use visual indicators to compare financial instruments in a "visual shape" manner: i.e extrapolating 'vectorial' characteristic from an indicator and comparing it with the same vectorial transformation of a different instrument
 
 ## Why "Shape"
 
-This app uses Donchian channels as a means of comparisons between instrument. The idea behid this app ios to match shannel froma POC of shape, rather than attempting to detect channel breakouts or other uch traditional tradibng approaches
+This app uses mostly Donchian channels as a means of comparisons between instrument. The idea behid this app is to match channels from a POV of shape, rather than attempting to detect channel breakouts or other such traditional trading approaches
 
-If a match is found in the way 2 different instruments move over time (by looking at how the indicators which abstract the movement compare as shapes),  we could hypotise that the subsequent moves might be similar, thus gaining an insight over the overall plausible direction of acertain instrument price
+If a match is found in the way 2 different instruments move over time (by looking at how the indicators which abstract the movement compare as shapes),  we could hypotise that the subsequent moves might be similar, thus gaining an insight over the overall plausible direction of a certain instrument price
 
 Please refer to the following detailed guide to understand how this application works, in particular the logic behind channels comparisons
 
@@ -36,7 +36,7 @@ Other requirements which will be checked by the startup script are the following
 
 1. Mongo
 2. PM2
-3. Python path pointing to the app matching engine
+3. Python path pointing to the python shapes matching engine
 
 If you prefer to start up manually you can run `npm start` in the __frontend__ and __backend__ folders, but you will need to make sure you have an instance on __Mongo__ running on port __27017__ and manually EXPORT the __PYTHONPATH__ env variable to point to the __st_engine__ folder
 
